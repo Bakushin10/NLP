@@ -18,9 +18,9 @@ class Pig_latin:
 
     def pigLationForText(self):
         text = input("enter a text")#reaplce with input
-        textSplitted = text.split()
+        textSplit = text.split()
         newText = []
-        for txt in textSplitted:
+        for txt in textSplit:
             keep = self.getPigLatin(txt);
             if keep != txt:
                 newWord = txt.replace(keep,"")
