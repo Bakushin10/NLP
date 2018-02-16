@@ -57,7 +57,7 @@ class pigLatin:
     word = "latin"#input("enter a word") #reaplce with input
     reg = re.compile(r'((a|i|u|e|o)\w*)')
     pig = re.findall(reg, word)
-    loop = len(word) - len(pig[0][0])
+    loop = len(word) - len(pig[0][0]) #pig[0][0] is the longest string
     pig_latin = pig[0][0]
     for n in range(loop):
          pig_latin += word[n]
