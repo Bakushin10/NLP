@@ -53,17 +53,37 @@ class Pig_latin:
 ### pig_latin using regular expression
 ###
 ###
-class pigLatin:
-    word = "latin"#input("enter a word") #reaplce with input
-    reg = re.compile(r'((a|i|u|e|o)\w*)')
-    pig = re.findall(reg, word)
-    loop = len(word) - len(pig[0][0]) #pig[0][0] is the longest string
-    pig_latin = pig[0][0]
-    for n in range(loop):
-         pig_latin += word[n]
-    pig_latin += "ay"
-    print(pig_latin)
+class PigLatin:
 
+    def getPigLatinInWord(self):
+            word = "banana"#input("enter a word") #reaplce with input
+            reg = re.compile(r'((a|i|u|e|o)\w*)')
+            pig = re.findall(reg, word)
+            if(pig != []):
+                loop = len(word) - len(pig[0][0]) #pig[0][0] is the  longest string
+                pig_latin = pig[0][0]
+                for n in range(loop):
+                     pig_latin += word[n]
+                pig_latin += "ay"
+                print(pig_latin)
+            else:
+                print(word)
+
+    def getPigLatinInSentence(self):
+        sentence = input("Enter : ")
+        sentence = sentence.split();
+        for word in sentence:
+            reg = re.compile(r'((a|i|u|e|o)\w*)')
+            pig = re.findall(reg, word)
+            if(pig != []):
+                loop = len(word) - len(pig[0][0])
+                pig_latin = pig[0][0]
+                for n in range(loop):
+                     pig_latin += word[n]
+                pig_latin += "ay"
+                print(pig_latin)
+            else:
+                print(word)
 
 
 pig = Pig_latin();
