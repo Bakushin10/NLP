@@ -1,5 +1,4 @@
 
-#"Desktop/UF/Spring-2018/NLP/github-repo/NLP/HW6/SBCorpus/TRN/SBC001.trn"
 import glob
 import codecs
 import re
@@ -35,6 +34,7 @@ class HW6:
         message = nltk.word_tokenize(message)
         message = nltk.bigrams(message)
         messageList = list(message)
+        conversationCorpusText = token
         conversationCorpus = nltk.bigrams(token)
         conversationCorpus = list(conversationCorpus)
         newList = []
@@ -53,11 +53,55 @@ class HW6:
         print(newList)
         for w in list(newList):
             print(w)
+        finalSentence = self.getSentence(newList,conversationCorpusText, conversationCorpus)
+        print(finalSentence)
 
-        # bigrams = nltk.bigrams(token)
-        # bigramList = list(bigrams)
-        # fdistForToken = nltk.FreqDist(token)
-        # fdistForBigram = nltk.FreqDist(bigramList)
+    def getSentence(self, bigrams,conversationCorpusText, conversationCorpusBigram):
+        finalSentence = []
+        for i in range(len(bigrams)):
+            if i+1 < len(bigrams):
+                bi1 = bigrams[i]
+                bi2 = bigrams[i][0] +" "+ bigrams[i+1][0]
+                bi2 = nltk.word_tokenize(bi2)
+                bi2 = nltk.bigrams(bi2)
+
+                print("-------------------")
+                print(bi1)
+
+                for a in bi2:
+                    print(a)
+                    bi2 = a
+                if bi1 == bi2:
+                    print(bi1, " == ", bi2)
+                    if finalSentence is not None:
+                        print(len(finalSentence))
+                        print("finalSentence : ", finalSentence[len(finalSentence)-1][1])
+                        print("bio1 : ", bi1[0])
+                        if finalSentence[len(finalSentence)-1][1] == bi1[0]:
+                             finalSentence.append(bi1)
+                        for a in finalSentence:
+                            print(a)
+                    # finalSentence.append(bi1)
+                else:
+                    fdist1 = nltk.FreqDist(conversationCorpusText)
+                    fdist2 = nltk.FreqDist(conversationCorpusBigram)
+                    ratioNum1 = float(fdist2[bi1])
+                    ratioNum2 = float(fdist2[bi2])
+                    ratioDen1 = fdist1[bi1[0]] + fdist1[bi1[1]]
+                    ratioDen2 = fdist1[bi2[0]] + fdist1[bi2[1]]
+                    ratio1 = ratioNum1 / ratioDen1;
+                    ratio2 = ratioNum2 / ratioDen2;
+                    print(bi1, "  ", bi2)
+                    print(ratio1, "  ", ratio2)
+                    if ratio1 > ratio2:
+                        finalSentence.append(bi1)
+                        #bigrams[i+1][0] = bi1[1]
+                    else:
+                        finalSentence.append(bi2)
+                        #bigrams[i+1][0] = bi2[1]
+                print("-------------------")
+        return finalSentence
+
     def checkPossibleConbinations(self, w, conversationCorpus):
         w = json.dumps(w)
         words = re.findall(r'(\b[a-z]{1,}\b)', w)
