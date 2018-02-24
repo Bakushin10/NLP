@@ -3,6 +3,7 @@ import glob
 import codecs
 import re
 import json
+import nltk
 wordDict = nltk.corpus.words.words()
 T9 ={
     'a':'abc', 'b':'abc', 'c':'abc', 'd':'def', 'e':'def', 'f':'def', 'g':'ghi', 'h':'ghi', 'i':'ghi',
@@ -10,9 +11,6 @@ T9 ={
     's':'pqrs','t':'tuv', 'u':'tuv', 'v':'tuv', 'w':'wxyz', 'x':'wxyz', 'y':'wxyz', 'z':'wxyz'
     }
 class HW6:
-    # with open('SBCorpus/TRN/SBC001.trn') as file:
-    #         text = file.read()
-        #print(glob.glob("SBCorpus/TRN/*.trn"))
 
     def loadFile(self):
         text = ""
@@ -27,8 +25,6 @@ class HW6:
         token = nltk.word_tokenize(text)
         token = self.trimm_text(token)
         self.getMatch(token,message)
-        print(len(token))
-        print("Done")
 
     def getMatch(self, token, message):
         message = nltk.word_tokenize(message)
@@ -50,14 +46,25 @@ class HW6:
                     newList.append(value)
                 else:
                     newList.append(w)
+
+        incompletedSentense = ""
         print(newList)
-        for w in list(newList):
-            print(w)
-        finalSentence = self.getSentence(newList,conversationCorpusText, conversationCorpus)
+        for i in range(len(newList)):
+            print(newList[i][0]," ",newList[i][1])
+            if i == 0:
+                incompletedSentense = incompletedSentense + newList[i][0] + " " + newList[i][1]
+            elif newList[i-1][1] == newList[i][0]:
+                incompletedSentense = incompletedSentense + " " + newList[i][1]
+            else:
+                incompletedSentense = incompletedSentense + " "+ newList[i][0] + " " + newList[i][1]
+
+        incompletedSentense = nltk.word_tokenize(incompletedSentense)
+        finalSentence = self.trimIncompletedSentence(newList,conversationCorpusText, conversationCorpus, incompletedSentense)
+        print("#\n#\n#words are...\n#\n#\n")
         print(finalSentence)
 
-    def getSentence(self, bigrams,conversationCorpusText, conversationCorpusBigram):
-        finalSentence = []
+    def trimIncompletedSentence(self, bigrams,conversationCorpusText, conversationCorpusBigram, incompletedSentense):
+        print("incompletedSentense"," : ", incompletedSentense)
         for i in range(len(bigrams)):
             if i+1 < len(bigrams):
                 bi1 = bigrams[i]
@@ -67,22 +74,11 @@ class HW6:
 
                 print("-------------------")
                 print(bi1)
-
                 for a in bi2:
                     print(a)
                     bi2 = a
-                if bi1 == bi2:
-                    print(bi1, " == ", bi2)
-                    if finalSentence is not None:
-                        print(len(finalSentence))
-                        print("finalSentence : ", finalSentence[len(finalSentence)-1][1])
-                        print("bio1 : ", bi1[0])
-                        if finalSentence[len(finalSentence)-1][1] == bi1[0]:
-                             finalSentence.append(bi1)
-                        for a in finalSentence:
-                            print(a)
-                    # finalSentence.append(bi1)
-                else:
+
+                if bi1 != bi2:
                     fdist1 = nltk.FreqDist(conversationCorpusText)
                     fdist2 = nltk.FreqDist(conversationCorpusBigram)
                     ratioNum1 = float(fdist2[bi1])
@@ -93,14 +89,28 @@ class HW6:
                     ratio2 = ratioNum2 / ratioDen2;
                     print(bi1, "  ", bi2)
                     print(ratio1, "  ", ratio2)
-                    if ratio1 > ratio2:
-                        finalSentence.append(bi1)
-                        #bigrams[i+1][0] = bi1[1]
-                    else:
-                        finalSentence.append(bi2)
-                        #bigrams[i+1][0] = bi2[1]
+                    searchWord = bigrams[i][0] +" "+ bigrams[i][1]
+                    searchWord = nltk.word_tokenize(searchWord)
+
+                    wordBegin = 0
+                    for i in range(len(incompletedSentense)):
+                        if i+1 < len(incompletedSentense):
+                            compare = incompletedSentense[i] + " " + incompletedSentense[i+1]
+                            compare = nltk.word_tokenize(compare)
+                            if searchWord == compare:
+                                wordBegin = i
+                                print(searchWord," ", compare)
+                                print("find! at wordBegin:"," ", wordBegin)
+                    for i in range(2):
+                        if ratio1 > ratio2:
+                            incompletedSentense[wordBegin + i] = bi1[i]
+                        else:
+                            incompletedSentense[wordBegin + i] = bi2[i]
+                    print(incompletedSentense)
+                    incompletedSentense = incompletedSentense[:wordBegin+2] + incompletedSentense[wordBegin+3:]
+                    print(incompletedSentense)
                 print("-------------------")
-        return finalSentence
+        return incompletedSentense
 
     def checkPossibleConbinations(self, w, conversationCorpus):
         w = json.dumps(w)
@@ -142,7 +152,5 @@ class HW6:
                     if not name.match(w) and not timeStamps.match(w) and not special.match(w)]
         return trimmed
 
-        # bigramList = nltk.bigrams(words)
-        # fdist1 = nltk.FreqDist(text)
 h = HW6()
 h.loadFile()
