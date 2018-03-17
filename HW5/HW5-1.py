@@ -47,10 +47,10 @@ class Pig_latin:
                 if(j == 'o' and i != j):
                     keep = keep + i
         return keep
-    
+
 ###
 ###
-### pig_latin using regular expression
+#  pig_latin using regular expression
 ###
 ###
 class PigLatin:
@@ -60,7 +60,7 @@ class PigLatin:
             reg = re.compile(r'((a|i|u|e|o)\w*)')
             pig = re.findall(reg, word)
             if(pig != []):
-                loop = len(word) - len(pig[0][0]) #pig[0][0] is the  longest string
+                loop = len(word) - len(pig[0][0])  # pig[0][0] is the  longest string
                 pig_latin = pig[0][0]
                 for n in range(loop):
                      pig_latin += word[n]
