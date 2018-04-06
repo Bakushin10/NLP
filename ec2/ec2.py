@@ -7,7 +7,7 @@ import nltk
 class EC2:
     def loadFile(self):
         text = ""
-        features = {}
+        document = []
         for eachFile in glob.glob("Desktop/UF/Spring-2018/NLP/github-repo/NLP/ec2/Loebner-logs-2003/ALICE/*.log"):
             with codecs.open(eachFile, "r", encoding='utf-8', errors='ignore') as file:
                     print("opening...", eachFile)
@@ -16,30 +16,24 @@ class EC2:
                     JUDGE_list = self.trimJUDGE(text)
                     print("PROGRAM_list : ", len(PROGRAM_list))
                     print("JUDGE_list : ", len(JUDGE_list))
-                    # features = self.build_feature(features, PROGRAM_list, JUDGE_list)
-                    document = []
-                    for i in range(len(JUDGE_list)):
 
+                    # build the document
+                    for i in range(len(JUDGE_list)):
                         index = {
-                            'PROGRAM': PROGRAM_list[i],
-                            'JUDGE': JUDGE_list[i]
+                             PROGRAM_list[i],
+                             JUDGE_list[i]
                             }
                         document.append(index)
+                    print(len(document))
 
-                    print(document)
-                    # I need to create the feature based on the document
-                    # document contains the list of conversation
+        features = self.build_feature(document)
 
-    def build_feature(self, features, PROGRAM_list, JUDGE_list):
-        # PROGRAM_words = set(PROGRAM_list)
-        # JUDGE_words = set(JUDGE_list)
-        for word in PROGRAM_list:
-            features['contain({})'.format(word)]  # = (word in PROGRAM_list)
-        for word in PROGRAM_list:
-            features['contain({})'.format(word)]  # = (word in JUDGE_list)
-        print("feature")
-        print(features)
-        return features
+    # I need to create the feature based on the document
+    # document contains the list of conversation
+    # print(document)
+    def build_feature(self, document):
+        feature_set = [(p, j) for p, j in document]  # p = program, j = judge
+        return feature_set
 
     def trimPROGRAM(self, text):
         findProgram = re.compile('PROGRAM: .*\r')
