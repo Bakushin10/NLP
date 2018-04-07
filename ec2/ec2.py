@@ -10,7 +10,7 @@ class EC2:
         text = ""
         humanWords = []
         robotsWords = []
-        for eachFile in glob.glob("Desktop/UF/Spring-2018/NLP/github-repo/NLP/ec2/Loebner-logs-2003/ALICE/*.log"):
+        for eachFile in glob.glob("Desktop/UF/Spring-2018/NLP/github-repo/NLP/ec2/Loebner-logs-2003/*/*.log"):
             with codecs.open(eachFile, "r", encoding='utf-8', errors='ignore') as file:
                     print("opening...", eachFile)
                     text = file.readlines()
@@ -26,7 +26,7 @@ class EC2:
         train_set, test_set = features[:3000], features[3000:]
         classifier = nltk.NaiveBayesClassifier.train(train_set)
         print(nltk.classify.accuracy(classifier, test_set))
-        print(classifier.show_most_informative_features(5))
+        print(classifier.show_most_informative_features(10))
 
     def createFeature(self, wordList):
         features = [(self.word_feature(word), entity) for (word, entity) in wordList]
@@ -49,13 +49,13 @@ class EC2:
             fh = findHuman.findall(line)
             fh2 = findHuman2.findall(line)
 
-            if fh == [] and fh2 == []:
+            if fh == [] and fh2 == []:  # if the message is written by a robot
                 message = extractText.findall(line)
                 onlyText = self.removeCapitalSequence(message)
                 newList = self.label_word(onlyText, "ROBOTS")
                 robotsWords.append(newList)
                 # print("ROBOTS:", onlyText)
-            else:
+            else:  # if the message is written by a human
                 message = extractText.findall(line)
                 onlyText = self.removeCapitalSequence(message)
                 newList = self.label_word(onlyText, "HUMAN")
