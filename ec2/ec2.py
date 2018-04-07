@@ -2,6 +2,7 @@ import glob
 import codecs
 import re
 import nltk
+import random
 
 
 class EC2:
@@ -14,25 +15,31 @@ class EC2:
                     print("opening...", eachFile)
                     text = file.readlines()
                     PROGRAM_list = self.trimPROGRAM(text, humanWords, robotsWords)
-                    # print(humanWords)
-                    # print("______________________________\n\n\n")
-                    # print(robotsWords)
+
+        # creating the feature...
         humanWords = self.joinList(humanWords)
         robotsWords = self.joinList(robotsWords)
-        features = humanWords + robotsWords
-        print(features)
+        wordList = humanWords + robotsWords
+        features = self.createFeature(wordList)
+        random.shuffle(features)
         print(len(features))
-        # self.build_feature(humanWords)
-    # I need to create the feature based on the document
-    # document contains the list of conversation
-    # print(document)
+        train_set, test_set = features[:3000], features[3000:]
+        classifier = nltk.NaiveBayesClassifier.train(train_set)
+        print(nltk.classify.accuracy(classifier, test_set))
+        print(classifier.show_most_informative_features(5))
+
+    def createFeature(self, wordList):
+        features = [(self.word_feature(word), entity) for (word, entity) in wordList]
+        return features
+
+    def word_feature(self, word):
+        return {"word": word}
+
     def build_feature(self, document):
         features = {}
         for list in document:
             features = [(word, entity) for word, entity in list]
         print(features)
-        # feature_set = [(p, j) for p, j in document]  # p = program, j = j
-        # return feature_set
 
     def trimPROGRAM(self, text, humanWords, robotsWords):
         findHuman = re.compile('CONFEDERATE')
@@ -80,7 +87,7 @@ class EC2:
             elif c.isupper() and removed is False:
                 removeWord = removeWord + c
         return trimmedMessage
-        
+
 
 ec = EC2()
 ec.loadFile()
