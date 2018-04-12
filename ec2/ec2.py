@@ -35,12 +35,6 @@ class EC2:
     def word_feature(self, word):
         return {"word": word}
 
-    def build_feature(self, document):
-        features = {}
-        for list in document:
-            features = [(word, entity) for word, entity in list]
-        print(features)
-
     def trimPROGRAM(self, text, humanWords, robotsWords):
         findHuman = re.compile('CONFEDERATE')
         findHuman2 = re.compile('JUDGE')
