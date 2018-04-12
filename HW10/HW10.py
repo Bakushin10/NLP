@@ -1,4 +1,3 @@
-
 import nltk
 import random
 from nltk.corpus import brown
@@ -45,15 +44,15 @@ class HW10:
                 taggedList = dictionary[word]
         print("The most tagged word  '", mostDistinctTaggedWord, ": ", taggedList)
 
-    def mostFrequestTag(self, corpus):
+    def mostFrequentTag(self, corpus):
         tagged_word = nltk.pos_tag(corpus)
         tagList = [(tag) for word, tag in tagged_word]
 
-        # Counter works like freqDist. and sotable
+        # Counter works like freqDist. and Counter is sortable
         sortedTagList = Counter(tagList).most_common()
         i = 0
         for each in sortedTagList:
-            if i < 20:  # show 20 most frequesnt tag
+            if i < 20:  # show 20 most frequent tag
                 print((i+1), ":", each)
                 i = i + 1
 
@@ -74,7 +73,7 @@ hw10 = HW10()
 # question 1
 hw10.mostCommonPlural(corpus)
 hw10.mostDistinctTag(corpus)
-hw10.mostFrequestTag(corpus)
+hw10.mostFrequentTag(corpus)
 
 # question 2
 hw10.document_features(corpus)
