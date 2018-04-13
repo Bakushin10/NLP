@@ -1,5 +1,4 @@
-import nltk
-import random
+import nltk, random, operator
 from nltk.corpus import brown
 from collections import defaultdict
 from collections import Counter
@@ -9,19 +8,19 @@ from nltk.corpus import wordnet as wn
 class HW10:
     def mostCommonPlural(self, corpus):
         tagged_word = nltk.pos_tag(corpus)
-        dictionary = defaultdict(list)
+        dictionary = defaultdict(int)
         for word, tag in tagged_word:
             if tag == 'NNS':  # finding the plural
                 tag_count = dictionary[word]
-                tag_count.append(tag)
+                tag_count += 1
                 dictionary[word] = tag_count
                 # print(word, tag, tag_count)
 
         maxCount = 0
         mostCommonPlu = ""
         for word, tag in tagged_word:
-            if len(dictionary[word]) > maxCount:
-                maxCount = len(dictionary[word])
+            if dictionary[word] > maxCount:
+                maxCount = dictionary[word]
                 mostCommonPlu = word
         print("The most common plural  '", mostCommonPlu, "' appears ", maxCount, "times")
 
@@ -56,11 +55,28 @@ class HW10:
                 print((i+1), ":", each)
                 i = i + 1
 
+    def mostCommonTagAfterNoun(self, corpus):
+        tagged_word = nltk.pos_tag(corpus)
+        dictionary = defaultdict(int)
+        size = len(tagged_word)
+        for i in range(size):
+            if tagged_word[i][1] == "NN" and i+1 < size:
+                count = dictionary[tagged_word[i+1][1]]
+                count += 1
+                dictionary[tagged_word[i+1][1]] = count
+        sortedDict = reversed(sorted(dictionary.items(), key=operator.itemgetter(1)))
+        for each in sortedDict:
+            print(each)
+
     def document_features(self, corpus):
         tagged_word = nltk.pos_tag(corpus)
         feature = [(self.create_feature(word), tag) for word, tag in tagged_word]
+        print("printing out first 50 features...")
+        i = 0
         for each in feature:
-            print(each)
+            if i < 50:
+                print(each)
+                i += 1
 
     def create_feature(self, word):
         return{"word": word,
@@ -74,6 +90,7 @@ hw10 = HW10()
 hw10.mostCommonPlural(corpus)
 hw10.mostDistinctTag(corpus)
 hw10.mostFrequentTag(corpus)
+hw10.mostCommonTagAfterNoun(corpus)
 
 # question 2
 hw10.document_features(corpus)
