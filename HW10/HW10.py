@@ -5,7 +5,7 @@ from collections import Counter
 from nltk.corpus import wordnet as wn
 
 #
-# python HashMap(dictionary)
+# Note on python HashMap(dictionary)
 #
 # Usually, a Python dictionary throws a KeyError if you try to get an item with
 # a key that is not currently in the dictionary. The defaultdict in contrast
