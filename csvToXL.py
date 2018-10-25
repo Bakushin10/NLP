@@ -1,7 +1,9 @@
 import sys
 import csv
+import glob
 import codecs
 #C:\Users\shin\Documents\excel\accounts.csv
+#C:\Users\shin\Documents\excel\empList.csv
 
 class CSVtoExcel:
     __pathToCSVFile = ""
@@ -13,20 +15,23 @@ class CSVtoExcel:
             print("path : " + self.__pathToCSVFile)
             return True
         else:
-            print("*******************************************************************************\n")
-            print("*** Please enter a path to the .csv file you would like to covert into .exl ***\n")
-            print("*******************************************************************************\n")
             return False
 
     def readCSV(self):
-        with open(self.__pathToCSVFile, mode='rb') as fobj:
-            readFile = csv.reader((line.replace('\0','') for line in fobj))
-            readFile = list(readFile)
-            print(readFile)
+        with codecs.open(self.__pathToCSVFile,"r",encoding='utf-8', errors='ignore') as file:
+            csvread= csv.reader(file,delimiter='\t')
+            print(csvread)
+            for i in csvread:
+                print(i)
 
+###
+### main
+###
 CSVtoXL = CSVtoExcel()
 
 if(CSVtoXL.getPath()):
     CSVtoXL.readCSV()
-
-
+else:
+    print("*******************************************************************************\n")
+    print("*** Please enter a path to the .csv file you would like to covert into .exl ***\n")
+    print("*******************************************************************************\n")
